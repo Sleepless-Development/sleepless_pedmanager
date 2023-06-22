@@ -1,4 +1,4 @@
-# Ped Spawner for FiveM
+# Ped Spawner
 
 spawn, animate, and manage NPCs.
 

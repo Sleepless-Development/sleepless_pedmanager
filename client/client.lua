@@ -70,7 +70,7 @@ function dismissped(index)
 end
 
 
-Citizen.CreateThread(function()
+CreateThread(function()
     for i = 1, #peds do
         local coords = peds[i].coords.xyz
 

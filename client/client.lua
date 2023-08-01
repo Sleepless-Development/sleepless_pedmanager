@@ -23,12 +23,14 @@ local peds = {
             },
         },
         onSpawn = function(self)
-            print(("ped handle is %s"):format(self.ped))
-            print(json.encode(self, { indent = true }))
+            for i, v in pairs(self) do
+                print(i, v)
+            end
         end,
         onDespawn = function(self)
-            print(("ped handle is %s"):format(self.ped))
-            print(json.encode(self, { indent = true }))
+            for i, v in pairs(self) do
+                print(i, v)
+            end
         end
     },
 }

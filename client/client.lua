@@ -82,14 +82,14 @@ function spawnped(index)
         end
 
         if peds[index].onSpawn then
-            peds[index].onSpawn(peds[index].ped, peds[index])
+            peds[index]:onSpawn()
         end
     end
 end
 
 function dismissped(index)
     if peds[index].onDespawn then
-        peds[index].onDespawn(peds[index].ped, peds[index])
+        peds[index]:onDespawn()
     end
 
     if peds[index].prop.entity then

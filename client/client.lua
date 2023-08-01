@@ -97,7 +97,7 @@ function dismissped(index)
         peds[index]:onDespawn()
     end
 
-    if peds[index].prop and peds[index].prop.entity then
+    if peds[index]?.prop?.entity then
         DeletePed(peds[index].prop.entity)
         peds[index].prop.entity = nil
     end

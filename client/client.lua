@@ -4,17 +4,17 @@ local peds = {
         coords = vec4(-74.8361, -819.9150, 326.1749, 32.4632),
         renderDistance = 1.0,
         -- scenario = "WORLD_HUMAN_CLIPBOARD", --optionally use a scenario or an animation.
-        -- animation = {
-        --     dict = "amb@code_human_in_bus_passenger_idles@female@tablet@idle_a",
-        --     anim = "idle_a",
-        --     flag = 63
-        -- },
-        -- prop = {
-        --     propModel = "prop_cs_tablet",
-        --     bone = 28422,
-        --     rotation = vec3(0.0, 0.0, 0.03),
-        --     offset = vec3(0.0, 0.0, 0.03),
-        -- },
+        animation = {
+            dict = "amb@code_human_in_bus_passenger_idles@female@tablet@idle_a",
+            anim = "idle_a",
+            flag = 63
+        },
+        prop = {
+            propModel = "prop_cs_tablet",
+            bone = 28422,
+            rotation = vec3(0.0, 0.0, 0.03),
+            offset = vec3(0.0, 0.0, 0.03),
+        },
         targetOptions = { --whatever normal options for ox_target
             {
                 icon = 'fas fa-money-bill-alt',

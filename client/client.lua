@@ -22,13 +22,13 @@ local peds = {
                 serverEvent = "some event"
             },
         },
-        onSpawn = function(ped, pedData)
-            print(("ped handle is %s"):format(ped))
-            print(json.encode(pedData, { indent = true }))
+        onSpawn = function(self)
+            print(("ped handle is %s"):format(self.ped))
+            print(json.encode(self, { indent = true }))
         end,
-        onDespawn = function(ped, pedData)
-            print(("ped handle is %s"):format(ped))
-            print(json.encode(pedData, { indent = true }))
+        onDespawn = function(self)
+            print(("ped handle is %s"):format(self.ped))
+            print(json.encode(self, { indent = true }))
         end
     },
 }

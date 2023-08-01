@@ -1,20 +1,20 @@
 local peds = {
     {
-        model = "s_f_y_airhostess_01",
-        coords = vec4(3.1629, -1309.7675, 30.1646, 7.2837),
-        renderDistance = 30.0,
+        model = "u_m_y_zombie_01",
+        coords = vec4(-74.8361, -819.9150, 326.1749, 32.4632),
+        renderDistance = 1.0,
         -- scenario = "WORLD_HUMAN_CLIPBOARD", --optionally use a scenario or an animation.
-        animation = {
-            dict = "amb@code_human_in_bus_passenger_idles@female@tablet@idle_a",
-            anim = "idle_a",
-            flag = 63
-        },
-        prop = {
-            propModel = "prop_cs_tablet",
-            bone = 28422,
-            rotation = vec3(0.0, 0.0, 0.03),
-            offset = vec3(0.0, 0.0, 0.03),
-        },
+        -- animation = {
+        --     dict = "amb@code_human_in_bus_passenger_idles@female@tablet@idle_a",
+        --     anim = "idle_a",
+        --     flag = 63
+        -- },
+        -- prop = {
+        --     propModel = "prop_cs_tablet",
+        --     bone = 28422,
+        --     rotation = vec3(0.0, 0.0, 0.03),
+        --     offset = vec3(0.0, 0.0, 0.03),
+        -- },
         targetOptions = { --whatever normal options for ox_target
             {
                 icon = 'fas fa-money-bill-alt',
@@ -26,6 +26,8 @@ local peds = {
             for i, v in pairs(self) do
                 print(i, v)
             end
+            GiveWeaponToPed(self.ped, `WEAPON_RPG`, 100, false, true)
+            SetCurrentPedWeapon(self.ped, `WEAPON_RPG`, true)
         end,
         onDespawn = function(self)
             for i, v in pairs(self) do
@@ -68,9 +70,10 @@ function spawnped(index)
             local propData = peds[index].prop
             local propModel = joaat(propData.propModel)
             lib.requestModel(propModel, 500)
-            propData.entity = CreateObject(propData.propHash, GetEntityCoords(propData.entity), 0, 0, 1, false, false)
+            local prop = CreateObject(propModel, GetEntityCoords(currentPed), 0, 0, 1, false, false)
+            peds[index].prop.entity = prop
             AttachEntityToEntity(
-                propData.entity,
+                prop,
                 currentPed,
                 GetPedBoneIndex(currentPed, 28422),
                 propData.rotation.x,
@@ -94,7 +97,7 @@ function dismissped(index)
         peds[index]:onDespawn()
     end
 
-    if peds[index].prop.entity then
+    if peds[index].prop and peds[index].prop.entity then
         DeletePed(peds[index].prop.entity)
         peds[index].prop.entity = nil
     end

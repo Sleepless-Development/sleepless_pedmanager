@@ -52,7 +52,10 @@ function spawnped(index)
         SetEntityInvincible(currentPed, true)
         SetBlockingOfNonTemporaryEvents(currentPed, true)
         SetPedFleeAttributes(currentPed, 0, 0)
-        exports.ox_target:addLocalEntity(currentPed, peds[index].targetOptions)
+
+        if peds[index].targetOptions then
+           exports.ox_target:addLocalEntity(currentPed, peds[index].targetOptions)
+        end
 
         if peds[index].animation then
             ClearPedTasksImmediately(currentPed)

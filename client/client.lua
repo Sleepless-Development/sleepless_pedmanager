@@ -1,80 +1,54 @@
-local peds = {
-    {
-        model = "u_m_y_zombie_01",
-        coords = vec4(-74.8361, -819.9150, 326.1749, 32.4632),
-        renderDistance = 1.0,
-        -- scenario = "WORLD_HUMAN_CLIPBOARD", --optionally use a scenario or an animation.
-        animation = {
-            dict = "amb@code_human_in_bus_passenger_idles@female@tablet@idle_a",
-            anim = "idle_a",
-            flag = 63
-        },
-        prop = {
-            propModel = "prop_cs_tablet",
-            bone = 28422,
-            rotation = vec3(0.0, 0.0, 0.03),
-            offset = vec3(0.0, 0.0, 0.03),
-        },
-        targetOptions = { --whatever normal options for ox_target
-            {
-                icon = 'fas fa-money-bill-alt',
-                label = 'something',
-                serverEvent = "some event"
-            },
-        },
-        onSpawn = function(self)
-            for i, v in pairs(self) do
-                print(i, v)
-            end
-            GiveWeaponToPed(self.ped, `WEAPON_RPG`, 100, false, true)
-            SetCurrentPedWeapon(self.ped, `WEAPON_RPG`, true)
-        end,
-        onDespawn = function(self)
-            for i, v in pairs(self) do
-                print(i, v)
-            end
-        end
-    },
-}
+local activeTextUIs = {}
 
-function spawnped(index)
-    if not peds[index].ped then
-        local pedModel = peds[index].model
+---@param action string
+---@param data any
+local function sendReactMessage(action, data)
+    SendNUIMessage({
+        action = action,
+        data = data
+    })
+end
+
+---@param index number
+local function spawnPed(index)
+    if not Peds[index].ped then
+        local pedData = Peds[index]
+        local pedModel = Peds[index].model
 
         lib.requestModel(pedModel, 500)
 
-        local coords = peds[index].coords
-        peds[index].ped = CreatePed(5, pedModel, coords.x, coords.y, coords.z - 1.0, coords.w, false, false)
+        local coords = pedData.coords
+        Peds[index].ped = CreatePed(5, pedModel, coords.x, coords.y, coords.z - 1.0, coords.w, false, false)
 
-        local currentPed = peds[index].ped
+        local currentPed = Peds[index].ped
         SetPedDefaultComponentVariation(currentPed)
         FreezeEntityPosition(currentPed, true)
         SetEntityInvincible(currentPed, true)
         SetBlockingOfNonTemporaryEvents(currentPed, true)
         SetPedFleeAttributes(currentPed, 0, 0)
 
-        if peds[index].targetOptions then
-           exports.ox_target:addLocalEntity(currentPed, peds[index].targetOptions)
+        if pedData.targetOptions then
+            exports.ox_target:addLocalEntity(currentPed, pedData.targetOptions)
         end
 
-        if peds[index].animation then
+        if pedData.animation then
             ClearPedTasksImmediately(currentPed)
-            lib.requestAnimDict(peds[index].animation.dict, 500)
-            TaskPlayAnim(currentPed, peds[index].animation.dict, peds[index].animation.anim, 3.0, -8, -1,
-                peds[index].animation.flag, 0, false, false, false)
+            lib.requestAnimDict(pedData.animation.dict, 500)
+            TaskPlayAnim(currentPed, pedData.animation.dict, pedData.animation.anim, 3.0, -8, -1,
+                pedData.animation.flag, 0, false, false, false)
         end
 
-        if peds[index].scenario then
+        if pedData.scenario then
             ClearPedTasksImmediately(currentPed)
-            TaskStartScenarioInPlace(currentPed, peds[index].scenario, 0, false)
+            TaskStartScenarioInPlace(currentPed, pedData.scenario, 0, false)
         end
 
-        if peds[index].prop then
-            local propData = peds[index].prop
+        if pedData.prop then
+            local propData = pedData.prop
             local propModel = joaat(propData.propModel)
             lib.requestModel(propModel, 500)
             local prop = CreateObject(propModel, GetEntityCoords(currentPed), 0, 0, 1, false, false)
-            peds[index].prop.entity = prop
+            pedData.prop.entity = prop
             AttachEntityToEntity(
                 prop,
                 currentPed,
@@ -89,43 +63,152 @@ function spawnped(index)
             )
         end
 
-        if peds[index].onSpawn then
-            peds[index]:onSpawn()
+        if pedData.textUI then
+            activeTextUIs[currentPed] = {
+                pos = { left = '50%', top = '50%' },
+                text = pedData.textUI.text,
+                show = false,
+                active = false,
+                currentDistance = 9999,
+                isClosest = false,
+                index = index,
+                lastTrigger = 0
+            }
+        end
+
+        if pedData.onSpawn then
+            pedData:onSpawn()
         end
     end
 end
 
-function dismissped(index)
-    if peds[index].onDespawn then
-        peds[index]:onDespawn()
+---@param index number
+local function dismissPed(index)
+    local pedData = Peds[index]
+
+    if pedData.onDespawn then
+        pedData:onDespawn()
     end
 
-    if peds[index]?.prop?.entity then
-        DeletePed(peds[index].prop.entity)
-        peds[index].prop.entity = nil
+    if pedData?.prop?.entity then
+        DeletePed(pedData.prop.entity)
+        pedData.prop.entity = nil
     end
 
-    exports.ox_target:removeLocalEntity(peds[index].ped)
+    if pedData.textUI then
+        sendReactMessage('remove', pedData.ped)
+    end
 
-    DeletePed(peds[index].ped)
-    peds[index].ped = nil
+    exports.ox_target:removeLocalEntity(pedData.ped)
+
+    DeletePed(pedData.ped)
+    pedData.ped = nil
+end
+
+---@param coords vector3
+---@return boolean onScreen, {left: string, top: string}
+local function getNuiPosFromCoords(coords)
+    if not coords then return false, {} end
+    local onScreen, x, y = GetScreenCoordFromWorldCoord(coords.x, coords.y, coords.z + 0.3)
+    return onScreen, { left = tostring(x * 100) .. "%", top = tostring(y * 100) .. "%" }
+end
+
+
+local loopActive = false
+local activepedData = nil
+
+local interact = lib.addKeybind({
+    name = 'pedInteract',
+    description = 'Interact with peds when prompted',
+    defaultKey = 'E',
+    onReleased = function(self)
+        if not activepedData then return end
+
+        local textUI = activeTextUIs[activepedData.ped]
+
+        if not textUI then return end
+
+        if textUI.active and textUI.show then
+            activeTextUIs[activepedData.ped].lastTrigger = GetGameTimer()
+            activepedData.textUI.onSelect(activepedData)
+        end
+    end
+})
+
+interact:disable(true)
+
+local function textUILoop()
+    if loopActive then return end
+    loopActive = true
+    while next(activeTextUIs) do
+        local wait = 100
+        local drawing = false
+        activepedData = nil
+        for ped, textUI in pairs(activeTextUIs) do
+            local pedData = Peds[textUI.index]
+            local textData = pedData.textUI
+            local inTimeOut = GetGameTimer() - textUI.lastTrigger < (textData.timeout or 1000)
+            local onScreen, position = getNuiPosFromCoords(textUI.coords)
+            local active = (textUI.currentDistance < (textData.activeDistance or 1.0) and textUI.isClosest)
+            local inDistance = textUI.currentDistance < (textData.drawDistance or 5.0)
+
+
+            activeTextUIs[ped].pos = position
+            activeTextUIs[ped].text = pedData.textUI.text
+            activeTextUIs[ped].show = onScreen and not inTimeOut and inDistance
+            activeTextUIs[ped].active = active
+
+            if active then
+                activepedData = pedData
+                if interact.disabled then
+                    interact:disable(false)
+                end
+            end
+
+            if activeTextUIs[ped].show and not drawing then
+                wait = 10
+                drawing = true
+            end
+        end
+
+        if not activepedData and not interact.disabled then
+            interact:disable(true)
+        end
+
+        sendReactMessage('textUIs', activeTextUIs)
+        Wait(wait)
+    end
 end
 
 CreateThread(function()
-    for i = 1, #peds do
-        local coords = peds[i].coords.xyz
+    for i = 1, #Peds do
+        local pedData = Peds[i]
+        local coords = pedData.coords.xyz
 
-        local point = lib.points.new(coords, peds[i].renderDistance, {
+        local point = lib.points.new({
+            coords = coords,
+            distance = pedData.renderDistance,
             pedIndex = i,
         })
 
         function point:onEnter()
-            spawnped(self.pedIndex)
+            spawnPed(self.pedIndex)
+            CreateThread(textUILoop)
         end
 
         function point:onExit()
-            dismissped(self.pedIndex)
+            dismissPed(self.pedIndex)
             lib.hideContext()
+        end
+
+        if pedData.textUI then
+            function point:nearby()
+                local pedData = Peds[self.pedIndex]
+                activeTextUIs[pedData.ped].currentDistance = self.currentDistance
+                activeTextUIs[pedData.ped].isClosest = self.isClosest
+                activeTextUIs[pedData.ped].index = self.pedIndex
+                activeTextUIs[pedData.ped].coords = self.coords
+            end
         end
     end
 end)

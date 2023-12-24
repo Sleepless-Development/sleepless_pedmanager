@@ -1,17 +1,16 @@
-fx_version 'cerulean'
-lua54 'yes'
+fx_version "cerulean"
 game 'gta5'
+lua54 'yes'
 
-version '1.1.6'
+version '2.0.0'
 
-shared_scripts {
-	"@ox_lib/init.lua",
-}
+ui_page 'web/build/index.html'
 
-client_scripts {
-  "client/*.lua"
-}
+shared_script "@ox_lib/init.lua"
+client_script "client/**/*"
+server_script "server/**/*"
 
-server_scripts {
-  "server/*.lua"
+files {
+	'web/build/index.html',
+	'web/build/**/*',
 }

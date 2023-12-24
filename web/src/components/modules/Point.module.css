@@ -1,0 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+.container {
+  --primaryColor: 64, 224, 208;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  aspect-ratio: 1;
+
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.1rem solid rgb(var(--primaryColor), 0.5);
+  transition: border-width 200ms linear, width 200ms linear,
+    background 200ms linear, font-size 200ms linear;
+  color: whitesmoke;
+  font-family: "Open Sans", sans-serif;
+  text-shadow: 0.1rem 0.1rem 0.3rem black;
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 40%;
+  aspect-ratio: 1;
+  background-color: rgb(var(--primaryColor));
+  border-radius: 50%;
+}
+
+.ButtonLetter {
+  position: relative;
+}
+
+.pointText {
+  animation: fadeIn 300ms ease-in;
+  position: absolute;
+  left: 120%;
+  width: max-content;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -9,6 +9,14 @@ local function sendReactMessage(action, data)
     })
 end
 
+local function handlePauseMenu()
+    if IsPauseMenuActive() then
+        sendReactMessage('pause', true)
+        repeat Wait(100) until not IsPauseMenuActive()
+        sendReactMessage('pause', false)
+    end
+end
+
 ---@param index number
 local function spawnPed(index)
     if not Peds[index].ped then
@@ -96,6 +104,7 @@ local function dismissPed(index)
     end
 
     if pedData.textUI then
+        activeTextUIs[pedData.ped] = nil
         sendReactMessage('remove', pedData.ped)
     end
 
@@ -176,8 +185,10 @@ local function textUILoop()
         end
 
         sendReactMessage('textUIs', activeTextUIs)
+        handlePauseMenu()
         Wait(wait)
     end
+    loopActive = false
 end
 
 CreateThread(function()

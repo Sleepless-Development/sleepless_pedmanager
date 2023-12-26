@@ -12,7 +12,7 @@ debugData([
 
 debugData([
   {
-    action: "textUI",
+    action: "textUIs",
     data: {
       [123123]: {
         pos: { left: "50%", top: "50%" },
@@ -33,18 +33,23 @@ export interface PointData {
 
 const App: React.FC = () => {
   const [points, setPoints] = useState<{ [index: number]: PointData }>({});
+  const [pause, setPause] = useState<boolean>(false)
 
   useNuiEvent<{ [index: number]: PointData }>("textUIs", (newPoints) => {
     if (!newPoints) return;
     setPoints((prevState) => ({
-      ...prevState, // Spread the existing state
+      ...prevState,
       ...newPoints,
     }));
   });
 
+  useNuiEvent<boolean>("pause", (paused) => {
+    setPause(paused)
+  });
+
   return (
     <>
-      {Object.keys(points).length > 0 ? (
+      {(Object.keys(points).length > 0 && !pause) ? (
         Object.keys(points).map((index) => {
           let value = points[parseInt(index)];
           return <Point key={index} data={value} />;

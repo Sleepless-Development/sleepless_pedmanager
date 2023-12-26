@@ -9,6 +9,7 @@ body {
   width: 100vw;
   font-size: 1vh;
   overflow: hidden;
+  /* background: rgb(25,25,35); */
 }
 
 :root {

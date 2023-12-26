@@ -2,6 +2,7 @@
 
 .container {
   --primaryColor: 64, 224, 208;
+  --animationTime: 200ms;
 
   position: absolute;
   top: 50%;
@@ -9,27 +10,36 @@
   translate: -50% -50%;
   aspect-ratio: 1;
 
-  border-radius: 50%;
+  border-radius: 20%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 0.1rem solid rgb(var(--primaryColor), 0.5);
-  transition: border-width 200ms linear, width 200ms linear,
-    background 200ms linear, font-size 200ms linear;
+  /* border: 0.1rem solid rgb(var(--primaryColor), 0.5); */
+  transition: width var(--animationTime) linear,
+    height var(--animationTime) linear, font-size var(--animationTime) linear;
   color: whitesmoke;
   font-family: "Open Sans", sans-serif;
   text-shadow: 0.1rem 0.1rem 0.3rem black;
 }
 
+.hexagon,
 .dot {
   position: absolute;
+  width: 3rem;
+  height: 3rem;
   top: 50%;
   left: 50%;
   translate: -50% -50%;
+  transition: border-width var(--animationTime) linear,
+    width var(--animationTime) linear, height var(--animationTime) linear;
+  color: rgb(var(--primaryColor), 0.5);
+  text-shadow: none;
+}
+
+.dot {
   width: 40%;
-  aspect-ratio: 1;
-  background-color: rgb(var(--primaryColor));
-  border-radius: 50%;
+  height: 50%;
+  color: rgb(var(--primaryColor));
 }
 
 .ButtonLetter {
@@ -39,7 +49,7 @@
 .pointText {
   animation: fadeIn 300ms ease-in;
   position: absolute;
-  left: 120%;
+  left: 100%;
   width: max-content;
 }
 

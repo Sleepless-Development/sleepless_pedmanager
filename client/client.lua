@@ -1,4 +1,5 @@
 local activeTextUIs = {}
+local isInPoint = false
 
 ---@param action string
 ---@param data any
@@ -147,9 +148,7 @@ local interact = lib.addKeybind({
 interact:disable(true)
 
 local function textUILoop()
-    if loopActive then return end
-    loopActive = true
-    while next(activeTextUIs) do
+    while next(activeTextUIs) and isInPoint do
         local wait = 100
         local drawing = false
         activepedData = nil
@@ -203,11 +202,13 @@ CreateThread(function()
         })
 
         function point:onEnter()
+            isInPoint = true
             spawnPed(self.pedIndex)
             CreateThread(textUILoop)
         end
 
         function point:onExit()
+            isInPoint = false
             dismissPed(self.pedIndex)
             lib.hideContext()
         end

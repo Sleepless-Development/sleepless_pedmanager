@@ -1,4 +1,4 @@
-local Peds = require 'data.lua'
+local Peds = require 'data'
 local interact = GetResourceState('sleepless_interact'):find('start')
 
 ---@param data PedConfig
@@ -119,6 +119,7 @@ local function addPed(data)
         dismissPed(data)
         lib.hideContext()
     end
+
     return point
 end
 

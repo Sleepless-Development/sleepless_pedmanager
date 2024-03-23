@@ -13,4 +13,4 @@ https://sleeplessdevelopment.dev/pedmanager
 
 ## 💾 Download
 
-[seleepless_pedmanager.zip](https://github.com/Sleepless-Development/sleepless_pedmanager/releases/download/latest/sleepless_pedmanager.zip)
+[sleepless_pedmanager.zip](https://github.com/Sleepless-Development/sleepless_pedmanager/releases/download/latest/sleepless_pedmanager.zip)

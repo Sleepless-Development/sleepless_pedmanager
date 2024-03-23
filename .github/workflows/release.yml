@@ -61,7 +61,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           title: ${{ env.RELEASE_VERSION }}
           prerelease: false
-          files: seleepless_pedmanager.zip
+          files: sleepless_pedmanager.zip
 
         env:
           CI: false

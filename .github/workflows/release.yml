@@ -49,10 +49,10 @@ jobs:
 
       - name: Bundle files
         run: |
-          mkdir -p ./temp/seleepless_pedmanager
-          cp ./{LICENSE,README.md,fxmanifest.lua,data.lua} ./temp/seleepless_pedmanager
-          cp -r ./{client,server} ./temp/seleepless_pedmanager
-          cd ./temp && zip -r ../seleepless_pedmanager.zip ./seleepless_pedmanager
+          mkdir -p ./temp/sleepless_pedmanager
+          cp ./{LICENSE,README.md,fxmanifest.lua,data.lua} ./temp/sleepless_pedmanager
+          cp -r ./{client,server} ./temp/sleepless_pedmanager
+          cd ./temp && zip -r ../sleepless_pedmanager.zip ./sleepless_pedmanager
 
       - name: Create Release
         uses: "marvinpinto/action-automatic-releases@v1.2.1"

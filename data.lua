@@ -17,7 +17,7 @@
 local Peds = {
     {
         model = "u_m_y_zombie_01",
-        coords = vec4(-1665.4545, -3143.3169, 13.9914, 281.1344),
+        coords = {vec4(-1665.4545, -3143.3169, 13.9914, 181.1344), vec4(-1664.4545, -3142.3169, 13.9914, 281.1344)},
         renderDistance = 8.0,
         -- scenario = "WORLD_HUMAN_CLIPBOARD", --optionally use a scenario or an animation.
         -- animation = {

@@ -106,32 +106,37 @@ end
 local function addPed(data)
     data.resource = GetInvokingResource() or 'sleepless_pedmanager'
 
-    if type(data.coords) ~= 'vector4' then
+    if type(data.coords) == 'vector4' then
         data.coords = { data.coords }
     end
 
     local points = {}
 
     for i = 1, #data.coords do
-        local coords = data.coords[i].xyz
+        local pedData = lib.table.deepclone(data)
+        pedData.coords = data.coords[i] --[[@as vector4]]
+
+        if pedData.interactOptions then
+            pedData.interactOptions.id = pedData.interactOptions.id .. i
+        end
 
         local point = lib.points.new({
-            coords = coords,
-            distance = data.renderDistance,
+            coords = pedData.coords.xyz,
+            distance = pedData.renderDistance,
         })
 
         function point:onEnter()
-            spawnPed(data)
+            spawnPed(pedData)
         end
 
         function point:onExit()
-            dismissPed(data)
+            dismissPed(pedData)
             lib.hideContext()
         end
 
         RegisterNetEvent('onResourceStop', function(resourceName)
             if data.resource == resourceName or resourceName == GetCurrentResourceName() then
-                dismissPed(data)
+                dismissPed(pedData)
                 point:remove()
             end
         end)

@@ -104,23 +104,42 @@ end
 
 ---@param data PedConfig
 local function addPed(data)
-    local coords = data.coords.xyz
+    data.resource = GetInvokingResource() or 'sleepless_pedmanager'
 
-    local point = lib.points.new({
-        coords = coords,
-        distance = data.renderDistance,
-    })
-
-    function point:onEnter()
-        spawnPed(data)
+    if type(data.coords) ~= 'vector4' then
+        data.coords = { data.coords }
     end
 
-    function point:onExit()
-        dismissPed(data)
-        lib.hideContext()
+    local points = {}
+
+    for i = 1, #data.coords do
+        local coords = data.coords[i].xyz
+
+        local point = lib.points.new({
+            coords = coords,
+            distance = data.renderDistance,
+        })
+
+        function point:onEnter()
+            spawnPed(data)
+        end
+
+        function point:onExit()
+            dismissPed(data)
+            lib.hideContext()
+        end
+
+        RegisterNetEvent('onResourceStop', function(resourceName)
+            if data.resource == resourceName or resourceName == GetCurrentResourceName() then
+                dismissPed(data)
+                point:remove()
+            end
+        end)
+
+        points[i] = point
     end
 
-    return point
+    return #points == 1 and points[1] or points
 end
 
 exports('addPed', addPed)

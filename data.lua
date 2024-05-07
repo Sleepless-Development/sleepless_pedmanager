@@ -1,8 +1,9 @@
 ---@diagnostic disable: missing-fields
 --- @class PedConfig
+--- @field resource string
 --- @field ped? number hash of ped after spawned
 --- @field model string The model identifier for the pedestrian.
---- @field coords vector4 The spawn coordinates and orientation for the pedestrian.
+--- @field coords vector4 | vector4[] The spawn coordinates and orientation for the pedestrian.
 --- @field scenario? string the scenario you want the ped to play when spawned
 --- @field animation? {dict: string, anim: string, flag?: number} the animation you want the ped to play when spawned
 --- @field prop? {propModel: string | number, bone: string | number, rot?: vector3, pos?: vector3, entity: number} -- prop is spawned and attached to ped

@@ -113,7 +113,7 @@ local function addPed(data)
     local points = {}
 
     for i = 1, #data.coords do
-        local pedData = lib.table.deepclone(data)
+        local pedData = lib.table.clone(data)
         pedData.coords = data.coords[i] --[[@as vector4]]
 
         if pedData.interactOptions then

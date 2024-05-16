@@ -7,10 +7,15 @@ local function spawnPed(data)
         local pedData = data
         local pedModel = data.model
 
-        lib.requestModel(pedModel, 500)
+        lib.requestModel(pedModel, 5000)
 
         local coords = pedData.coords
         data.ped = CreatePed(5, pedModel, coords.x, coords.y, coords.z - 1.0, coords.w, false, false)
+        SetModelAsNoLongerNeeded(pedModel)
+
+        lib.waitFor(function()
+            if DoesEntityExist(data.ped) then return true end
+        end)
 
         local currentPed = data.ped --[[@as number]]
         SetPedDefaultComponentVariation(currentPed)
@@ -30,9 +35,10 @@ local function spawnPed(data)
 
         if pedData.animation then
             ClearPedTasksImmediately(currentPed)
-            lib.requestAnimDict(pedData.animation.dict, 500)
+            lib.requestAnimDict(pedData.animation.dict, 5000)
             TaskPlayAnim(currentPed, pedData.animation.dict, pedData.animation.anim, 3.0, -8, -1, pedData.animation.flag,
                 0, false, false, false)
+            RemoveAnimDict(pedData.animation.dict)
         end
 
         if pedData.scenario then
@@ -47,11 +53,13 @@ local function spawnPed(data)
                 pedData.prop.propModel = joaat(propData.propModel)
                 propData.propModel = pedData.prop.propModel
             end
-            lib.requestModel(propData.propModel, 500)
+            lib.requestModel(propData.propModel, 5000)
 
             ---@diagnostic disable-next-line: param-type-mismatch
             local prop = CreateObject(propData.propModel, GetEntityCoords(currentPed), 0, 0, 1, false, false)
             pedData.prop.entity = prop
+
+            SetModelAsNoLongerNeeded(propData.propModel)
 
             if type(propData.bone) == "string" then
                 pedData.prop.bone = GetEntityBoneIndexByName(currentPed, pedData.prop.bone --[[@as string]])

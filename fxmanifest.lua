@@ -2,7 +2,7 @@ fx_version "cerulean"
 game 'gta5'
 lua54 'yes'
 
-version '1.2.9'
+version '2.1.5'
 
 files {
     "data.lua"

@@ -114,6 +114,10 @@ end
 local function addPed(data)
     data.resource = GetInvokingResource() or 'sleepless_pedmanager'
 
+    local dataType = type(data.coords)
+
+    assert(dataType == 'vector4' or dataType == 'table', 'pedmanager expected a vector4 or array of vector4s, but got ' .. dataType)
+
     if type(data.coords) == 'vector4' then
         data.coords = { data.coords }
     end
@@ -123,6 +127,8 @@ local function addPed(data)
     for i = 1, #data.coords do
         local pedData = lib.table.clone(data)
         pedData.coords = data.coords[i] --[[@as vector4]]
+
+        assert(type(pedData.coords) == 'vector4', 'pedmanager expected a vector4, but got' .. type(pedData.coords))
 
         if pedData.interactOptions then
             pedData.interactOptions.id = pedData.interactOptions.id .. i

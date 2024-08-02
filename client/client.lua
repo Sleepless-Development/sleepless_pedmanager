@@ -116,7 +116,8 @@ local function addPed(data)
 
     local dataType = type(data.coords)
 
-    assert(dataType == 'vector4' or dataType == 'table', 'pedmanager expected a vector4 or array of vector4s, but got ' .. dataType)
+    assert(dataType == 'vector4' or dataType == 'table',
+        'pedmanager expected a vector4 or array of vector4s, but got ' .. dataType)
 
     if type(data.coords) == 'vector4' then
         data.coords = { data.coords }
@@ -131,7 +132,8 @@ local function addPed(data)
         assert(type(pedData.coords) == 'vector4', 'pedmanager expected a vector4, but got' .. type(pedData.coords))
 
         if pedData.interactOptions then
-            pedData.interactOptions.id = pedData.interactOptions.id .. i
+            pedData.interactOptions = lib.table.clone(pedData.interactOptions)
+            pedData.interactOptions.id = string.format('%s:%s', pedData.interactOptions.id, i)
         end
 
         local point = lib.points.new({

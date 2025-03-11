@@ -40,26 +40,21 @@ local Peds = {
             },
         },
         interactOptions = {
-            id = "uniqueID",
-            options = {
-                {
-                    text = "Local Interact Option",
-                    icon = "hand", -- Example simple FA icon name
-                    -- groups = {['police'] = 1},
-                    -- items = {['money'] = 100},
-                    action = function(data) print("Local entity action triggered") end,
-                },
-                {
-                    text = "Local Interact Option 2",
-                    icon = "hand", -- Example simple FA icon name
-                    -- groups = {['police'] = 1},
-                    -- items = {['money'] = 100},
-                    action = function(data) print("Local entity action triggered") end,
-                },
+            {
+                label = "Local Interact Option",
+                icon = "hand", -- Example simple FA icon name
+                -- groups = {['police'] = 1},
+                -- items = {['money'] = 100},
+                -- color = {255, 0, 0, 200},
+                onSelect = function(data) print("Local entity action triggered") end,
             },
-            renderDistance = 10.0,
-            activeDistance = 2.0,
-            cooldown = 1500
+            {
+                label = "Local Interact Option 2",
+                icon = "hand", -- Example simple FA icon name
+                -- groups = {['police'] = 1},
+                -- items = {['money'] = 100},
+                onSelect = function(data) print("Local entity action triggered") end,
+            },
         },
         onSpawn = function(ped)
             GiveWeaponToPed(ped, `WEAPON_RPG`, 100, false, true)

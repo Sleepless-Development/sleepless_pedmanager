@@ -12,7 +12,7 @@ A FiveM ped manager for spawning local peds within distance of players and addin
 
 ## 📃 Documentation
 
-https://sleeplessdevelopment.dev/pedmanager
+https://sleeplessdevelopment.dev/docs/pedmanager
 
 ## 💾 Download
 

@@ -1,6 +1,50 @@
 local Peds = require 'data'
 local interact = GetResourceState('sleepless_interact'):find('start')
 
+---@param resource string
+---@return boolean
+local function resourceStarted(resource)
+    return GetResourceState(resource):find('start') ~= nil
+end
+
+--- `export` is resolved on `owner` because prompts records the invoking resource.
+---@param options PromptEntry | PromptEntry[]
+---@param owner string
+---@return PromptEntry | PromptEntry[]
+local function bindPromptExports(options, owner)
+    if type(options) ~= 'table' then
+        return options
+    end
+
+    local single = table.type(options) == 'hash' and options.label ~= nil
+    local list = single and { options } or options
+    local bound = {}
+
+    for i = 1, #list do
+        local option = list[i]
+        if type(option) == 'table' and option.export and not option.onSelect then
+            local exportName = option.export
+            local copy = {}
+            for key, value in pairs(option) do
+                copy[key] = value
+            end
+            copy.export = nil
+            copy.onSelect = function(response)
+                exports[owner][exportName](nil, response)
+            end
+            bound[i] = copy
+        else
+            bound[i] = option
+        end
+    end
+
+    if single then
+        return bound[1]
+    end
+
+    return bound
+end
+
 ---@param data PedConfig
 local function spawnPed(data)
     if not data.ped then
@@ -30,6 +74,14 @@ local function spawnPed(data)
 
         if interact and pedData.interactOptions then
             exports.sleepless_interact:addLocalEntity(currentPed, pedData.interactOptions)
+        end
+
+        if pedData.promptOptions and resourceStarted('sleepless_prompts') then
+            exports.sleepless_prompts:addLocalEntity(
+                currentPed,
+                bindPromptExports(pedData.promptOptions, pedData.resource),
+                pedData.promptSettings
+            )
         end
 
         if pedData.animation then
@@ -102,6 +154,9 @@ local function dismissPed(data)
         end
         if data.interactOptions then
             exports.sleepless_interact:removeLocalEntity(data.ped)
+        end
+        if data.promptOptions and resourceStarted('sleepless_prompts') then
+            exports.sleepless_prompts:removeLocalEntity(data.ped)
         end
         DeleteEntity(data.ped)
     end

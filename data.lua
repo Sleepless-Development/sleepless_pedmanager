@@ -11,58 +11,75 @@
 --- @field renderDistance number The distance at which the pedestrian starts being rendered.
 --- @field targetOptions OxTargetOption[] A list of options for interaction targets with the pedestrian.
 --- @field interactOptions LocalEntityData Configuration for text UI interactions.
+--- @field promptOptions? PromptEntry | PromptEntry[] sleepless_prompts entries shown while the player is near this ped.
+--- @field promptSettings? PromptWorldSettings Slot, layout, and default distance for promptOptions.
 --- @field onSpawn function A callback function that is called when the pedestrian is spawned.
 --- @field onDespawn function A callback function that is called when the pedestrian
 
 ---@type PedConfig[]
 local Peds = {
-    {
-        model = "u_m_y_zombie_01",
-        coords = vec4(-1664.4545, -3142.3169, 13.9914, 281.1344),
-        renderDistance = 8.0,
-        -- scenario = "WORLD_HUMAN_CLIPBOARD", --optionally use a scenario or an animation.
-        -- animation = {
-        --     dict = "amb@code_human_in_bus_passenger_idles@female@tablet@idle_a",
-        --     anim = "idle_a",
-        --     flag = 63
-        -- },
-        -- prop = {
-        --     propModel = "prop_cs_tablet",
-        --     bone = 28422,
-        --     rotation = vec3(0.0, 0.0, 0.03),
-        --     offset = vec3(0.0, 0.0, 0.03),
-        -- },
-        targetOptions = { --whatever normal options for ox_target
-            {
-                icon = 'fas fa-money-bill-alt',
-                label = 'something',
-                serverEvent = "some event"
-            },
-        },
-        interactOptions = {
-            {
-                label = "Local Interact Option",
-                icon = "hand", -- Example simple FA icon name
-                -- groups = {['police'] = 1},
-                -- items = {['money'] = 100},
-                -- color = {255, 0, 0, 200},
-                onSelect = function(data) print("Local entity action triggered") end,
-            },
-            {
-                label = "Local Interact Option 2",
-                icon = "hand", -- Example simple FA icon name
-                -- groups = {['police'] = 1},
-                -- items = {['money'] = 100},
-                onSelect = function(data) print("Local entity action triggered") end,
-            },
-        },
-        onSpawn = function(ped)
-            GiveWeaponToPed(ped, `WEAPON_RPG`, 100, false, true)
-            SetCurrentPedWeapon(ped, `WEAPON_RPG`, true)
-        end,
-        onDespawn = function(ped)
-        end
-    },
+	{
+		model = "u_m_y_zombie_01",
+		coords = {vec4(-1288.6049, -3391.2388, 13.9401, 314.3947), vec4(-1289.0149, -3390.6040, 13.9401, 307.0259)},
+		renderDistance = 8.0,
+		-- scenario = "WORLD_HUMAN_CLIPBOARD", --optionally use a scenario or an animation.
+		-- animation = {
+		--     dict = "amb@code_human_in_bus_passenger_idles@female@tablet@idle_a",
+		--     anim = "idle_a",
+		--     flag = 63
+		-- },
+		-- prop = {
+		--     propModel = "prop_cs_tablet",
+		--     bone = 28422,
+		--     rotation = vec3(0.0, 0.0, 0.03),
+		--     offset = vec3(0.0, 0.0, 0.03),
+		-- },
+		targetOptions = { --whatever normal options for ox_target
+			{
+				icon = 'fas fa-money-bill-alt',
+				label = 'something',
+				serverEvent = "some event"
+			},
+		},
+		interactOptions = {
+			{
+				label = "Local Interact Option",
+				icon = "hand", -- Example simple FA icon name
+				offsetAbsolute = vec3(0, 0, 0.3),
+				-- groups = {['police'] = 1},
+				-- items = {['money'] = 100},
+				-- color = {255, 0, 0, 200},
+				onSelect = function(data) print("Local entity action triggered") end,
+			},
+			{
+				label = "Local Interact Option 2",
+				icon = "hand", -- Example simple FA icon name
+				offsetAbsolute = vec3(0, 0, 0.3),
+				-- groups = {['police'] = 1},
+				-- items = {['money'] = 100},
+				onSelect = function(data) print("Local entity action triggered") end,
+			},
+		},
+		promptOptions = {
+			{
+				name = "talk",
+				label = "Talk",
+				control = 38,
+				distance = 2.5,
+				onSelect = function(data) print("Prompt action triggered") end,
+			},
+		},
+		-- promptSettings = {
+		--     position = "bottom-center",
+		--     distance = 2.5,
+		-- },
+		onSpawn = function(ped)
+			GiveWeaponToPed(ped, `WEAPON_RPG`, 100, false, true)
+			SetCurrentPedWeapon(ped, `WEAPON_RPG`, true)
+		end,
+		onDespawn = function(ped)
+		end
+	},
 }
 
 return Peds

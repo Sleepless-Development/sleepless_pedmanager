@@ -1,6 +1,6 @@
-# seleepless_pedmanager
+# sleepless_pedmanager
 
-A FiveM ped manager for spawning local peds within distance of players and adding target/interact options to them
+A FiveM ped manager for spawning local peds within distance of players and adding target, interact, or prompt options to them
 
 ![](https://img.shields.io/github/downloads/Sleepless-Development/sleepless_pedmanager/total?logo=github)
 ![](https://img.shields.io/github/downloads/Sleepless-Development/sleepless_pedmanager/latest/total?logo=github)

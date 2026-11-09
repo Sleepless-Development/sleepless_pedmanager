@@ -60,15 +60,15 @@ local Peds = {
 				onSelect = function(data) print("Local entity action triggered") end,
 			},
 		},
-		promptOptions = {
-			{
-				name = "talk",
-				label = "Talk",
-				control = 38,
-				distance = 2.5,
-				onSelect = function(data) print("Prompt action triggered") end,
-			},
-		},
+		-- promptOptions = {
+		-- 	{
+		-- 		name = "talk",
+		-- 		label = "Talk",
+		-- 		control = 38,
+		-- 		distance = 2.5,
+		-- 		onSelect = function(data) print("Prompt action triggered") end,
+		-- 	},
+		-- },
 		-- promptSettings = {
 		--     position = "bottom-center",
 		--     distance = 2.5,
